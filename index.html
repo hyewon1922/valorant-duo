@@ -6,92 +6,255 @@
 <title>나랑 듀오 할래?</title>
 
 <style>
-    body {
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: linear-gradient(135deg, #ffe6f0, #e8e1ff);
-        font-family: Arial, sans-serif;
-        text-align: center;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    .box {
-        background: white;
-        padding: 40px 25px;
-        border-radius: 25px;
-        width: 80%;
-        max-width: 400px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(145deg, #fce8f1, #eee8ff);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+                 "Noto Sans KR", sans-serif;
+    color: #3d3740;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
 
-    .emoji {
-        font-size: 60px;
-        margin-bottom: 15px;
-    }
+.card {
+    width: calc(100% - 40px);
+    max-width: 430px;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 28px;
+    padding: 38px 25px;
+    text-align: center;
+    box-shadow: 0 15px 45px rgba(100, 70, 100, 0.15);
+}
 
-    h1 {
-        font-size: 28px;
-        color: #444;
-        margin-bottom: 15px;
-    }
+.game-icon {
+    font-size: 62px;
+    margin-bottom: 10px;
+}
 
-    p {
-        color: #777;
-        font-size: 16px;
-    }
+h1 {
+    font-size: 27px;
+    line-height: 1.45;
+    margin: 10px 0 14px;
+}
 
-    button {
-        border: none;
-        border-radius: 15px;
-        padding: 14px 22px;
-        margin: 10px 5px;
-        font-size: 16px;
-        cursor: pointer;
-    }
+.description {
+    color: #817983;
+    line-height: 1.7;
+    font-size: 15px;
+    margin-bottom: 28px;
+}
 
-    #yes {
-        background: #ff8fb3;
-        color: white;
-    }
+button {
+    border: 0;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 15px;
+    padding: 15px 20px;
+    cursor: pointer;
+}
 
-    #no {
-        background: #eeeeee;
-        color: #555;
-    }
+.yes {
+    width: 100%;
+    background: #f28eae;
+    color: white;
+    box-shadow: 0 7px 18px rgba(242, 142, 174, 0.3);
+    margin-bottom: 12px;
+}
+
+.no {
+    background: #f1eef1;
+    color: #77717a;
+}
+
+#noButton {
+    position: relative;
+    transition: left 0.15s ease, top 0.15s ease;
+}
+
+.choice {
+    margin: 20px 0;
+    text-align: left;
+}
+
+.choice label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #e4dce2;
+    border-radius: 14px;
+    font-size: 16px;
+    font-family: inherit;
+    background: white;
+}
+
+.submit {
+    width: 100%;
+    background: #f28eae;
+    color: white;
+    margin-top: 10px;
+}
+
+.small {
+    font-size: 13px;
+    color: #99919a;
+    margin-top: 18px;
+}
+
+.heart {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="card" id="card">
 
-    <div class="emoji">🎮</div>
+    <div class="game-icon">🎮</div>
 
-    <h1>나랑 발로란트 듀오 할래?</h1>
+    <h1>혹시 나랑<br>발로란트 듀오 할래?</h1>
 
-    <p>혹시 오늘 같이 게임할 사람을 찾고 있는데...</p>
+    <div class="description">
+        나 요즘 같이 게임할 사람 찾고 있는데...<br>
+        혹시 시간 괜찮으면 같이 한 판 해줄래?
+    </div>
 
-    <button id="yes" onclick="yes()">당연하지! 💗</button>
-    <button id="no" onclick="no()">싫어 😭</button>
+    <button class="yes" onclick="showDate()">
+        💗 같이 할래
+    </button>
+
+    <br>
+
+    <button class="no" id="noButton">
+        😭 싫어
+    </button>
 
 </div>
 
+
 <script>
-function yes() {
-    document.querySelector(".box").innerHTML = `
-        <div class="emoji">🎉</div>
-        <h1>진짜?! 💗</h1>
-        <p>그럼 우리 발로란트 듀오하자!!</p>
-        <p>🎮 같이 게임하자 🎮</p>
+
+const noButton = document.getElementById("noButton");
+
+function moveNoButton() {
+
+    const maxX = window.innerWidth - noButton.offsetWidth - 30;
+    const maxY = window.innerHeight - noButton.offsetHeight - 30;
+
+    const x = Math.max(15, Math.random() * maxX);
+    const y = Math.max(15, Math.random() * maxY);
+
+    noButton.style.position = "fixed";
+    noButton.style.left = x + "px";
+    noButton.style.top = y + "px";
+}
+
+/* PC에서 마우스를 가져가면 도망가기 */
+noButton.addEventListener("mouseenter", moveNoButton);
+
+/* 휴대폰에서 누르려고 하면 도망가기 */
+noButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    moveNoButton();
+});
+
+
+function showDate() {
+
+    document.getElementById("card").innerHTML = `
+
+        <div class="game-icon">🎮</div>
+
+        <h1>좋아! 🎀<br>그럼 언제가 편해?</h1>
+
+        <div class="description">
+            같이 할 날짜랑 시간을 골라줘!
+        </div>
+
+        <div class="choice">
+            <label>📅 날짜</label>
+            <input type="date" id="date">
+        </div>
+
+        <div class="choice">
+            <label>⏰ 시간</label>
+            <input type="time" id="time">
+        </div>
+
+        <button class="submit" onclick="finish()">
+            이 시간으로 할래 💗
+        </button>
+
+        <div class="small">
+            날짜와 시간을 골라주면 돼!
+        </div>
+    `;
+
+    /* 오늘 이전 날짜는 선택하지 못하게 하기 */
+    const dateInput = document.getElementById("date");
+
+    const today = new Date();
+
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+
+    dateInput.min = `${yyyy}-${mm}-${dd}`;
+}
+
+
+function finish() {
+
+    const date = document.getElementById("date").value;
+    const time = document.getElementById("time").value;
+
+    /* 날짜나 시간을 선택하지 않았을 때 */
+    if (!date || !time) {
+        alert("날짜랑 시간을 둘 다 골라줘! 🥺");
+        return;
+    }
+
+    const formattedDate = new Date(date + "T00:00:00");
+
+    const dateText =
+        formattedDate.getFullYear() + "년 " +
+        (formattedDate.getMonth() + 1) + "월 " +
+        formattedDate.getDate() + "일";
+
+    /* 마지막 화면 */
+    document.getElementById("card").innerHTML = `
+
+        <div class="heart">🎮❤️</div>
+
+        <h1>그럼 그날 같이<br>발로에서 만나자 🎮❤️</h1>
+
+        <div class="description">
+            ${dateText}<br>
+            ${time}<br><br>
+
+            캐리는 못하지만<br>
+            <strong>트레이드 내줄게... 🥺</strong>
+        </div>
+
     `;
 }
 
-function no() {
-    document.querySelector("h1").innerText = "진짜 싫어...? 🥺";
-}
 </script>
 
 </body>
-</html>
+</html> 
