@@ -33,18 +33,23 @@ body {
 .card {
     width: calc(100% - 40px);
     max-width: 430px;
+    max-height: 92vh;
+    overflow-y: auto;
     background: rgba(255,255,255,.94);
     border-radius: 28px;
-    padding: 32px 25px;
+    padding: 30px 24px;
     text-align: center;
     box-shadow: 0 15px 45px rgba(100,70,100,.15);
     position: relative;
-    overflow: hidden;
+}
+
+.card::-webkit-scrollbar {
+    display: none;
 }
 
 .game-icon {
-    font-size: 45px;
-    margin-bottom: 6px;
+    font-size: 43px;
+    margin-bottom: 5px;
 }
 
 h1 {
@@ -60,7 +65,10 @@ h1 {
     margin-bottom: 22px;
 }
 
-/* 버튼 */
+/* =========================
+   버튼
+========================= */
+
 button {
     border: 0;
     font-family: inherit;
@@ -79,7 +87,6 @@ button {
     width: 100%;
 }
 
-/* 좋아 / 싫어 한 줄 배치 */
 .button-row {
     display: flex;
     gap: 10px;
@@ -107,7 +114,10 @@ button {
     transition: left .15s ease, top .15s ease;
 }
 
-/* 날짜 / 시간 */
+/* =========================
+   날짜 / 시간
+========================= */
+
 .choice {
     margin: 16px 0;
     text-align: left;
@@ -136,7 +146,10 @@ input {
     margin-top: 15px;
 }
 
-/* 중간 페이지 */
+/* =========================
+   중간 페이지
+========================= */
+
 .middle-button {
     background: #f28eae;
     color: white;
@@ -145,7 +158,10 @@ input {
     min-width: 140px;
 }
 
-/* 떨어지는 이모지 */
+/* =========================
+   떨어지는 이모지
+========================= */
+
 .falling {
     position: fixed;
     top: -40px;
@@ -175,7 +191,57 @@ input {
     }
 }
 
-/* 마지막 페이지 */
+/* =========================
+   스킨 선택
+========================= */
+
+.skin-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+.skin-button {
+    background: #fff;
+    color: #68616a;
+    border: 1px solid #eadfe5;
+    padding: 13px 8px;
+    min-height: 48px;
+    font-size: 12px;
+    transition: .2s;
+}
+
+.skin-button:hover {
+    border-color: #f28eae;
+}
+
+.skin-button.selected {
+    background: #fff0f5;
+    border: 2px solid #f28eae;
+    color: #e2769b;
+    box-shadow: 0 4px 12px rgba(242,142,174,.18);
+}
+
+.next-button {
+    width: 100%;
+    background: #f28eae;
+    color: white;
+    box-shadow: 0 7px 18px rgba(242,142,174,.3);
+}
+
+.selected-text {
+    min-height: 20px;
+    color: #e2769b;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+/* =========================
+   마지막 페이지
+========================= */
+
 .final-card {
     background: rgba(255,255,255,.96);
     border: 1px solid #f3dce5;
@@ -191,7 +257,7 @@ input {
 
 .promise-title {
     color: #e985a8;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     margin-bottom: 10px;
 }
@@ -202,16 +268,22 @@ input {
     line-height: 1.9;
 }
 
+.skin-result {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0dfe6;
+    line-height: 1.8;
+}
+
+.skin-result strong {
+    color: #e985a8;
+}
+
 .final-message {
     color: #817983;
     font-size: 13px;
     line-height: 1.8;
     margin: 18px 0;
-}
-
-.final-message strong {
-    font-weight: 400;
-    color: #817983;
 }
 
 .save-btn {
@@ -245,7 +317,6 @@ input {
         혹시 시간 괜찮으면 같이 한 판 해줄래?
     </div>
 
-    <!-- 좋아 / 싫어 한 줄 -->
     <div class="button-row">
 
         <button class="yes" onclick="showMiddle()">
@@ -409,8 +480,14 @@ function startFallingEmojis() {
 
 
 /* =========================
-   날짜 / 시간 선택
+   날짜 / 시간
 ========================= */
+
+let selectedDate = "";
+let selectedTime = "";
+let selectedSheriff = "";
+let selectedVandal = "";
+
 
 function showDatePage() {
 
@@ -464,7 +541,7 @@ function showDatePage() {
 
         <button
             class="submit yes"
-            onclick="finish()"
+            onclick="finishDate()"
         >
             이 시간으로 해줄게😏
         </button>
@@ -481,7 +558,7 @@ function showDatePage() {
    날짜 제출
 ========================= */
 
-function finish() {
+function finishDate() {
 
     const date =
         document.getElementById("date").value;
@@ -498,130 +575,68 @@ function finish() {
         return;
     }
 
-    const d =
-        new Date(date + "T00:00:00");
+    selectedDate = date;
+    selectedTime = time;
 
-    const dateText =
-        d.getFullYear() +
-        "년 " +
-        (d.getMonth() + 1) +
-        "월 " +
-        d.getDate() +
-        "일";
-
-    showFinal(dateText, time);
+    showSheriff();
 }
 
 
 /* =========================
-   마지막 페이지
+   셰리프 선택
 ========================= */
 
-function showFinal(dateText, time) {
+function showSheriff() {
 
-    const card =
-        document.getElementById("card");
+    document.getElementById("card").innerHTML = `
 
-    card.className =
-        "card final-card";
-
-    card.innerHTML = `
+        <div class="game-icon">
+            🔫
+        </div>
 
         <h1>
-            그날 발로란트에서<br>
-            꼭 만나기로 약속 🎮❤️
+            어떤 셰리프 스킨을 착용할까 🤔
         </h1>
 
-        <div class="promise">
+        <div class="description">
+            같이 할 때 사용할 셰리프를 골라줘!
+        </div>
 
-            <div class="promise-title">
-                우리의 듀오 약속 💌
-            </div>
+        <div class="skin-grid">
 
-            <div class="date-line">
-                📅 ${dateText}<br>
-                ⏰ ${time}
-            </div>
+            <button
+                class="skin-button"
+                onclick="selectSheriff(this, '네오 프런티어')"
+            >
+                네오 프런티어
+            </button>
+
+            <button
+                class="skin-button"
+                onclick="selectSheriff(this, '미스트블룸')"
+            >
+                미스트블룸
+            </button>
 
         </div>
 
-        <div class="final-message">
-            캐리는 못하지만 트레이드 내줄게
+        <div class="selected-text" id="sheriffText">
+            스킨을 하나 골라줘!
         </div>
 
         <button
-            class="save-btn"
-            onclick="saveImage()"
+            class="next-button"
+            onclick="goToVandal()"
         >
-            💗 사진으로 저장하기
-        </button>
-
-        <button
-            class="again"
-            onclick="location.reload()"
-        >
-            시간 약속 수정하기
+            다음 →
         </button>
 
     `;
 }
 
 
-/* =========================
-   사진 저장
-========================= */
+function selectSheriff(button, skin) {
 
-async function saveImage() {
-
-    const area =
-        document.getElementById("card");
-
-    const save =
-        area.querySelector(".save-btn");
-
-    const again =
-        area.querySelector(".again");
-
-    save.style.display = "none";
-    again.style.display = "none";
-
-    try {
-
-        const canvas =
-            await html2canvas(
-                area,
-                {
-                    backgroundColor: null,
-                    scale: 2
-                }
-            );
-
-        const link =
-            document.createElement("a");
-
-        link.download =
-            "우리의-듀오-약속.png";
-
-        link.href =
-            canvas.toDataURL("image/png");
-
-        link.click();
-
-    } catch (e) {
-
-        alert(
-            "사진 저장에 실패했어 🥺\n화면 캡처로 저장해줘!"
-        );
-
-    } finally {
-
-        save.style.display = "block";
-        again.style.display = "block";
-
-    }
-}
-
-</script>
-
-</body>
-</html>
+    document
+        .querySelectorAll(".skin-button")
+        .forEach(btn =>
