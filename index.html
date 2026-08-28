@@ -18,8 +18,12 @@ body {
     justify-content: center;
     align-items: center;
     background: linear-gradient(145deg, #fce8f1, #eee8ff);
-    font-family: -apple-system, BlinkMacSystemFont,
-        "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Apple SD Gothic Neo",
+        "Noto Sans KR",
+        sans-serif;
     color: #3d3740;
     overflow: hidden;
 }
@@ -58,11 +62,10 @@ h1 {
     margin-bottom: 22px;
 }
 
-/* 좋아 / 싫어 */
-.button-row {
-    display: flex;
-    gap: 10px;
-}
+
+/* =========================
+   기본 버튼
+========================= */
 
 button {
     border: none;
@@ -72,6 +75,13 @@ button {
     border-radius: 15px;
     padding: 14px;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
 }
 
 .button-row button {
@@ -89,7 +99,6 @@ button {
     color: #77717a;
 }
 
-/* 일반 버튼 */
 .next {
     width: 100%;
     background: #f28eae;
@@ -97,15 +106,10 @@ button {
     margin-top: 8px;
 }
 
-input {
-    width: 100%;
-    padding: 13px;
-    border: 1px solid #e4dce2;
-    border-radius: 14px;
-    font-family: inherit;
-    font-size: 14px;
-    background: white;
-}
+
+/* =========================
+   날짜 / 시간
+========================= */
 
 .choice {
     text-align: left;
@@ -119,7 +123,21 @@ input {
     margin-bottom: 7px;
 }
 
-/* 스킨 */
+input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #e4dce2;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 14px;
+    background: white;
+}
+
+
+/* =========================
+   스킨 선택
+========================= */
+
 .skin-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -149,17 +167,22 @@ input {
     margin-bottom: 8px;
 }
 
-/* 떨어지는 이모지 */
+
+/* =========================
+   떨어지는 이모지
+========================= */
+
 .falling {
     position: fixed;
     top: -30px;
-    z-index: 10;
+    z-index: 100;
     pointer-events: none;
     animation: fall linear forwards;
 }
 
 @keyframes fall {
-    from {
+
+    0% {
         transform: translateY(0) rotate(0deg);
         opacity: 0;
     }
@@ -168,13 +191,17 @@ input {
         opacity: .8;
     }
 
-    to {
+    100% {
         transform: translateY(110vh) rotate(30deg);
         opacity: 0;
     }
 }
 
-/* 마지막 */
+
+/* =========================
+   마지막 페이지
+========================= */
+
 .promise {
     background: #fff6f9;
     border: 1px solid #f4d5e1;
@@ -219,20 +246,35 @@ input {
 </style>
 </head>
 
+
 <body>
 
 <div class="card" id="card"></div>
 
+
 <script>
 
-/* =========================
-   첫 페이지
-========================= */
+/* ==================================================
+   저장할 정보
+================================================== */
+
+let selectedDate = "";
+let selectedTime = "";
+let sheriff = "";
+let vandal = "";
+
+
+/* ==================================================
+   1. 첫 화면
+================================================== */
 
 function showHome() {
 
     document.getElementById("card").innerHTML = `
-        <div class="icon">🎮</div>
+
+        <div class="icon">
+            🎮
+        </div>
 
         <h1>
             혹시 나랑<br>
@@ -245,53 +287,115 @@ function showHome() {
         </div>
 
         <div class="button-row">
-            <button class="yes" onclick="showMiddle()">
+
+            <button
+                type="button"
+                class="yes"
+                id="yesButton">
                 좋아
             </button>
 
-            <button class="no" id="noButton">
+            <button
+                type="button"
+                class="no"
+                id="noButton">
                 싫어
             </button>
+
         </div>
     `;
 
-    const no = document.getElementById("noButton");
 
-    no.addEventListener("mouseenter", moveNo);
-    no.addEventListener("touchstart", function(e) {
-        e.preventDefault();
-        moveNo();
-    });
+    /* 좋아 버튼 */
+
+    const yesButton =
+        document.getElementById("yesButton");
+
+    yesButton.addEventListener(
+        "click",
+        showMiddle
+    );
+
+
+    /* 싫어 버튼 */
+
+    const noButton =
+        document.getElementById("noButton");
+
+    noButton.addEventListener(
+        "mouseenter",
+        moveNoButton
+    );
+
+    noButton.addEventListener(
+        "touchstart",
+        function(event) {
+
+            event.preventDefault();
+
+            moveNoButton();
+
+        },
+        { passive: false }
+    );
 }
 
 
-/* 싫어 버튼 도망 */
-function moveNo() {
+/* ==================================================
+   싫어 버튼 도망
+================================================== */
 
-    const no = document.getElementById("noButton");
+function moveNoButton() {
 
-    no.style.position = "fixed";
+    const button =
+        document.getElementById("noButton");
+
+    if (!button) return;
+
+
+    button.style.position = "fixed";
+
+
+    const maxX =
+        window.innerWidth -
+        button.offsetWidth -
+        20;
+
+    const maxY =
+        window.innerHeight -
+        button.offsetHeight -
+        20;
+
 
     const x =
-        Math.random() *
-        (window.innerWidth - no.offsetWidth - 30) + 15;
+        Math.max(
+            10,
+            Math.random() * maxX
+        );
 
     const y =
-        Math.random() *
-        (window.innerHeight - no.offsetHeight - 30) + 15;
+        Math.max(
+            10,
+            Math.random() * maxY
+        );
 
-    no.style.left = Math.max(15, x) + "px";
-    no.style.top = Math.max(15, y) + "px";
+
+    button.style.left =
+        x + "px";
+
+    button.style.top =
+        y + "px";
 }
 
 
-/* =========================
-   두 번째 페이지
-========================= */
+/* ==================================================
+   2. 두 번째 페이지
+================================================== */
 
 function showMiddle() {
 
     document.getElementById("card").innerHTML = `
+
         <h1>
             잠시만.. 좋다고? 😭
         </h1>
@@ -300,17 +404,32 @@ function showMiddle() {
             난 주완이가 거절할 줄 알았어...
         </div>
 
-        <button class="next" onclick="showDate()">
-            뭐라는 거야?
+        <button
+            type="button"
+            class="next"
+            id="middleButton">
+            뭐라는거야?
         </button>
     `;
 
-    dropEmojis();
+
+    document
+        .getElementById("middleButton")
+        .addEventListener(
+            "click",
+            showDate
+        );
+
+
+    startFallingEmojis();
 }
 
 
-/* 이모지 */
-function dropEmojis() {
+/* ==================================================
+   떨어지는 이모지
+================================================== */
+
+function startFallingEmojis() {
 
     const emojis = [
         "💕",
@@ -320,61 +439,87 @@ function dropEmojis() {
         "🌸"
     ];
 
-    for (let i = 0; i < 15; i++) {
 
-        setTimeout(function() {
+    for (
+        let i = 0;
+        i < 15;
+        i++
+    ) {
 
-            const e =
-                document.createElement("div");
+        setTimeout(
+            function() {
 
-            e.className = "falling";
+                const emoji =
+                    document.createElement("div");
 
-            e.innerText =
-                emojis[
-                    Math.floor(
-                        Math.random() * emojis.length
-                    )
-                ];
+                emoji.className =
+                    "falling";
 
-            e.style.left =
-                Math.random() * 95 + "vw";
+                emoji.innerText =
+                    emojis[
+                        Math.floor(
+                            Math.random() *
+                            emojis.length
+                        )
+                    ];
 
-            e.style.fontSize =
-                (15 + Math.random() * 10) + "px";
 
-            e.style.animationDuration =
-                (3 + Math.random() * 2) + "s";
+                emoji.style.left =
+                    Math.random() * 95 +
+                    "vw";
 
-            document.body.appendChild(e);
 
-            setTimeout(
-                () => e.remove(),
-                6000
-            );
+                emoji.style.fontSize =
+                    15 +
+                    Math.random() * 10 +
+                    "px";
 
-        }, i * 300);
+
+                emoji.style.animationDuration =
+                    3 +
+                    Math.random() * 2 +
+                    "s";
+
+
+                document.body.appendChild(
+                    emoji
+                );
+
+
+                setTimeout(
+                    function() {
+                        emoji.remove();
+                    },
+                    6000
+                );
+
+            },
+            i * 300
+        );
     }
 }
 
 
-/* =========================
-   날짜 / 시간
-========================= */
-
-let selectedDate = "";
-let selectedTime = "";
-let sheriff = "";
-let vandal = "";
-
+/* ==================================================
+   3. 날짜 / 시간
+================================================== */
 
 function showDate() {
 
     document
         .querySelectorAll(".falling")
-        .forEach(e => e.remove());
+        .forEach(
+            function(element) {
+                element.remove();
+            }
+        );
+
 
     document.getElementById("card").innerHTML = `
-        <div class="icon">🎮</div>
+
+        <div class="icon">
+            🎮
+        </div>
 
         <h1>
             그럼 언제가 편해?
@@ -384,8 +529,12 @@ function showDate() {
             같이 할 날짜랑 시간을 골라줘!
         </div>
 
+
         <div class="choice">
-            <label>📅 날짜</label>
+
+            <label>
+                📅 날짜
+            </label>
 
             <input
                 type="date"
@@ -393,31 +542,58 @@ function showDate() {
                 min="2026-08-28"
                 max="2026-09-30"
             >
+
         </div>
 
+
         <div class="choice">
-            <label>⏰ 시간</label>
+
+            <label>
+                ⏰ 시간
+            </label>
 
             <input
                 type="time"
                 id="time"
             >
+
         </div>
 
-        <button class="next" onclick="saveDate()">
+
+        <button
+            type="button"
+            class="next"
+            id="dateButton">
+
             이 시간으로 해줄게😏
+
         </button>
+
 
         <div style="
             font-size:11px;
             color:#99919a;
             margin-top:14px;
         ">
-            2026년 9월 30일까지 선택할 수 있어!
+
+            2026년 9월까지 선택할 수 있어!
+
         </div>
     `;
+
+
+    document
+        .getElementById("dateButton")
+        .addEventListener(
+            "click",
+            saveDate
+        );
 }
 
+
+/* ==================================================
+   날짜 저장
+================================================== */
 
 function saveDate() {
 
@@ -427,26 +603,37 @@ function saveDate() {
     const time =
         document.getElementById("time").value;
 
+
     if (!date || !time) {
-        alert("날짜랑 시간을 둘 다 골라줘! 🥺");
+
+        alert(
+            "날짜랑 시간을 둘 다 골라줘! 🥺"
+        );
+
         return;
     }
 
+
     selectedDate = date;
+
     selectedTime = time;
+
 
     showSheriff();
 }
 
 
-/* =========================
-   셰리프
-========================= */
+/* ==================================================
+   4. 셰리프
+================================================== */
 
 function showSheriff() {
 
     document.getElementById("card").innerHTML = `
-        <div class="icon">🔫</div>
+
+        <div class="icon">
+            🔫
+        </div>
 
         <h1>
             어떤 셰리프 스킨을 착용할까 🤔
@@ -456,68 +643,111 @@ function showSheriff() {
             같이 할 때 사용할 셰리프를 골라줘!
         </div>
 
+
         <div class="skin-grid">
 
-            <button class="skin"
-                onclick="pickSheriff(this,'네오 프런티어')">
+            <button
+                type="button"
+                class="skin"
+                onclick="pickSheriff(this, '네오 프런티어')">
+
                 네오 프런티어
+
             </button>
 
-            <button class="skin"
-                onclick="pickSheriff(this,'미스트블룸')">
+
+            <button
+                type="button"
+                class="skin"
+                onclick="pickSheriff(this, '미스트블룸')">
+
                 미스트블룸
+
             </button>
 
         </div>
 
-        <div class="selected-text" id="selectedSheriff">
+
+        <div
+            class="selected-text"
+            id="selectedSheriff">
+
             스킨을 하나 골라줘!
+
         </div>
 
-        <button class="next" onclick="goVandal()">
+
+        <button
+            type="button"
+            class="next"
+            onclick="goVandal()">
+
             다음 →
+
         </button>
     `;
 }
 
 
-function pickSheriff(button, value) {
+function pickSheriff(
+    button,
+    value
+) {
 
     document
         .querySelectorAll(".skin")
-        .forEach(b =>
-            b.classList.remove("selected")
+        .forEach(
+            function(item) {
+                item.classList.remove(
+                    "selected"
+                );
+            }
         );
 
-    button.classList.add("selected");
+
+    button.classList.add(
+        "selected"
+    );
+
 
     sheriff = value;
 
-    document.getElementById("selectedSheriff")
-        .innerText =
-        "선택한 셰리프 · " + value;
+
+    document.getElementById(
+        "selectedSheriff"
+    ).innerText =
+        "선택한 셰리프 · " +
+        value;
 }
 
 
 function goVandal() {
 
     if (!sheriff) {
-        alert("셰리프 스킨을 하나 골라줘! 🤔");
+
+        alert(
+            "셰리프 스킨을 하나 골라줘! 🤔"
+        );
+
         return;
     }
+
 
     showVandal();
 }
 
 
-/* =========================
-   밴달
-========================= */
+/* ==================================================
+   5. 밴달
+================================================== */
 
 function showVandal() {
 
     document.getElementById("card").innerHTML = `
-        <div class="icon">🔫</div>
+
+        <div class="icon">
+            🔫
+        </div>
 
         <h1>
             어떤 밴달 스킨을 착용할까 😇
@@ -527,125 +757,203 @@ function showVandal() {
             이번엔 밴달을 골라줘!
         </div>
 
+
         <div class="skin-grid">
 
-            <button class="skin" onclick="pickVandal(this,'크라이오스테이시스')">
+            <button class="skin"
+                onclick="pickVandal(this,'크라이오스테이시스')">
                 크라이오스테이시스
             </button>
 
-            <button class="skin" onclick="pickVandal(this,'미스트블룸')">
+            <button class="skin"
+                onclick="pickVandal(this,'미스트블룸')">
                 미스트블룸
             </button>
 
-            <button class="skin" onclick="pickVandal(this,'제로팽')">
+            <button class="skin"
+                onclick="pickVandal(this,'제로팽')">
                 제로팽
             </button>
 
-            <button class="skin" onclick="pickVandal(this,'2024 챔피언스')">
+            <button class="skin"
+                onclick="pickVandal(this,'2024 챔피언스')">
                 2024 챔피언스
             </button>
 
-            <button class="skin" onclick="pickVandal(this,'에리스')">
+            <button class="skin"
+                onclick="pickVandal(this,'에리스')">
                 에리스
             </button>
 
-            <button class="skin" onclick="pickVandal(this,'임페리움')">
+            <button class="skin"
+                onclick="pickVandal(this,'임페리움')">
                 임페리움
             </button>
 
-            <button class="skin" onclick="pickVandal(this,'오라바이 원탭')">
+            <button class="skin"
+                onclick="pickVandal(this,'오라바이 원탭')">
                 오라바이 원탭
             </button>
 
-            <button class="skin" onclick="pickVandal(this,'크로노보이드')">
+            <button class="skin"
+                onclick="pickVandal(this,'크로노보이드')">
                 크로노보이드
             </button>
 
-            <button class="skin" onclick="pickVandal(this,'싱귤러러티')">
+            <button class="skin"
+                onclick="pickVandal(this,'싱귤러러티')">
                 싱귤러러티
             </button>
 
-            <button class="skin" onclick="pickVandal(this,'에보리')">
+            <button class="skin"
+                onclick="pickVandal(this,'에보리')">
                 에보리
             </button>
 
         </div>
 
-        <div class="selected-text" id="selectedVandal">
+
+        <div
+            class="selected-text"
+            id="selectedVandal">
+
             스킨을 하나 골라줘!
+
         </div>
 
-        <button class="next" onclick="finish()">
+
+        <button
+            type="button"
+            class="next"
+            onclick="finish()">
+
             이걸로 할게 🎮
+
         </button>
     `;
 }
 
 
-function pickVandal(button, value) {
+function pickVandal(
+    button,
+    value
+) {
 
     document
         .querySelectorAll(".skin")
-        .forEach(b =>
-            b.classList.remove("selected")
+        .forEach(
+            function(item) {
+                item.classList.remove(
+                    "selected"
+                );
+            }
         );
 
-    button.classList.add("selected");
+
+    button.classList.add(
+        "selected"
+    );
+
 
     vandal = value;
 
-    document.getElementById("selectedVandal")
-        .innerText =
-        "선택한 밴달 · " + value;
+
+    document.getElementById(
+        "selectedVandal"
+    ).innerText =
+        "선택한 밴달 · " +
+        value;
 }
 
 
-/* =========================
-   마지막
-========================= */
+/* ==================================================
+   오전 / 오후 변환
+================================================== */
 
 function formatTime(time) {
 
-    let [hour, minute] =
+    let parts =
         time.split(":");
 
-    hour = Number(hour);
+    let hour =
+        Number(parts[0]);
 
-    const period =
-        hour < 12 ? "오전" : "오후";
+    let minute =
+        parts[1];
 
-    if (hour === 0) hour = 12;
-    if (hour > 12) hour -= 12;
 
-    return `${period} ${hour}:${minute}`;
+    let period =
+        hour < 12
+        ? "오전"
+        : "오후";
+
+
+    if (hour === 0) {
+        hour = 12;
+    }
+
+    else if (hour > 12) {
+        hour -= 12;
+    }
+
+
+    return (
+        period +
+        " " +
+        hour +
+        ":" +
+        minute
+    );
 }
 
+
+/* ==================================================
+   6. 마지막 페이지
+================================================== */
 
 function finish() {
 
     if (!vandal) {
-        alert("밴달 스킨을 하나 골라줘! 😇");
+
+        alert(
+            "밴달 스킨을 하나 골라줘! 😇"
+        );
+
         return;
     }
 
-    const d =
+
+    const date =
         new Date(
-            selectedDate + "T00:00:00"
+            selectedDate +
+            "T00:00:00"
         );
 
+
     const dateText =
-        d.getFullYear() + "년 " +
-        (d.getMonth() + 1) + "월 " +
-        d.getDate() + "일";
+        date.getFullYear() +
+        "년 " +
+        (date.getMonth() + 1) +
+        "월 " +
+        date.getDate() +
+        "일";
+
 
     const timeText =
-        formatTime(selectedTime);
+        formatTime(
+            selectedTime
+        );
 
-    document.getElementById("card").innerHTML = `
+
+    document.getElementById(
+        "card"
+    ).innerHTML = `
+
         <h1>
             그날 발로란트에서<br>
             꼭 만나기로 약속 🎮❤️
         </h1>
+
 
         <div class="promise">
 
@@ -653,46 +961,68 @@ function finish() {
                 우리의 듀오 약속 💌
             </div>
 
+
             <div class="result">
+
                 📅 ${dateText}<br>
+
                 ⏰ ${timeText}<br>
+
                 🔫 셰리프 · ${sheriff}<br>
+
                 🔫 밴달 · ${vandal}
+
             </div>
 
         </div>
 
+
         <div class="final-message">
+
             캐리는 못하지만 트레이드 내줄게<br>
+
             선택한 스킨 착용하고 기다리고 있을게 🎮
+
         </div>
 
-        <button class="save" onclick="saveImage()">
-            💗 사진으로 저장하기
+
+        <button
+            type="button"
+            class="save"
+            onclick="saveImage()">
+
+            📸 사진으로 저장하기
+
         </button>
 
-        <button class="edit" onclick="showDate()">
+
+        <button
+            type="button"
+            class="edit"
+            onclick="showDate()">
+
             시간 약속 수정하기
+
         </button>
     `;
 }
 
 
-/* =========================
+/* ==================================================
    사진 저장
-========================= */
+================================================== */
 
 function saveImage() {
 
     alert(
-        "현재 페이지를 휴대폰 화면 캡처로 저장해줘! 📸"
+        "휴대폰의 화면 캡처 기능으로 저장해줘! 📸"
     );
 }
 
 
-/* =========================
+/* ==================================================
    시작
-========================= */
+================================================== */
 
 showHome();
 
