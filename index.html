@@ -2,13 +2,20 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0,
-               maximum-scale=1.0, user-scalable=no">
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
 
 <title>발로란트 듀오</title>
 
 <style>
+
+/* ==================================================
+   기본
+================================================== */
 
 * {
     box-sizing: border-box;
@@ -49,9 +56,9 @@ body {
 }
 
 
-/* =========================
+/* ==================================================
    카드
-========================= */
+================================================== */
 
 .card {
     width: calc(100% - 40px);
@@ -62,8 +69,7 @@ body {
 
     overflow-y: auto;
 
-    background:
-        rgba(255,255,255,.96);
+    background: rgba(255,255,255,.96);
 
     border-radius: 28px;
 
@@ -84,9 +90,9 @@ body {
 }
 
 
-/* =========================
+/* ==================================================
    글씨
-========================= */
+================================================== */
 
 .icon {
     font-size: 42px;
@@ -107,12 +113,15 @@ h1 {
 }
 
 
-/* =========================
+/* ==================================================
    버튼 공통
-========================= */
+================================================== */
 
 button {
     border: none;
+
+    appearance: none;
+    -webkit-appearance: none;
 
     font-family: inherit;
     font-size: 14px;
@@ -122,18 +131,19 @@ button {
 
     cursor: pointer;
 
-    -webkit-tap-highlight-color:
-        transparent;
+    -webkit-tap-highlight-color: transparent;
 
     touch-action: manipulation;
 
     user-select: none;
+
+    outline: none;
 }
 
 
-/* =========================
-   첫 화면 버튼
-========================= */
+/* ==================================================
+   첫 화면 버튼 영역
+================================================== */
 
 .button-row {
     display: flex;
@@ -146,16 +156,19 @@ button {
     align-items: center;
 
     position: relative;
+
+    min-height: 48px;
 }
 
 
-/*
-   좋아 / 싫어
-   항상 동일한 크기
-*/
+/* ==================================================
+   좋아 / 싫어 버튼
+   ★ 크기 완전 고정
+================================================== */
 
 .button-row .yes,
 .button-row .no {
+
     width: 150px;
     min-width: 150px;
     max-width: 150px;
@@ -178,13 +191,18 @@ button {
     border-radius: 15px;
 
     overflow: hidden;
+
+    line-height: 48px;
 }
 
 
-/* 좋아 */
+/* ==================================================
+   좋아
+================================================== */
 
 .yes {
     background: #f28eae;
+
     color: white;
 
     box-shadow:
@@ -193,10 +211,15 @@ button {
 }
 
 
-/* 싫어 */
+/* ==================================================
+   싫어
+   ★ 배경 + 테두리 + 글자를 하나의 도형으로 고정
+================================================== */
 
 .no {
+
     background: #f1eef1;
+
     color: #77717a;
 
     position: relative;
@@ -213,21 +236,75 @@ button {
 
     flex: 0 0 150px !important;
 
+    border: none !important;
+
     border-radius: 15px !important;
+
+    box-shadow: none;
+
+    display: flex !important;
+
+    justify-content: center !important;
+    align-items: center !important;
 
     white-space: nowrap;
 
     overflow: hidden;
 
-    /*
-       이동할 때도 버튼 박스 자체의
-       크기와 모양을 유지
-    */
+    line-height: 48px;
+
+    transform: none;
+
     transform-origin: center center;
+
+    /*
+       브라우저가 버튼 크기나
+       모양을 임의로 바꾸지 못하게 함
+    */
+    box-sizing: border-box !important;
+
+    appearance: none !important;
+    -webkit-appearance: none !important;
 }
 
 
-/* 일반 다음 버튼 */
+/*
+   싫어 버튼이 이동할 때도
+   배경/글자/모서리가 한 덩어리로 이동
+*/
+
+.no.moving {
+
+    position: fixed !important;
+
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+
+    padding: 0 !important;
+
+    border-radius: 15px !important;
+
+    display: flex !important;
+
+    justify-content: center !important;
+    align-items: center !important;
+
+    line-height: 48px;
+
+    box-sizing: border-box !important;
+
+    z-index: 9999;
+}
+
+
+/* ==================================================
+   일반 다음 버튼
+================================================== */
 
 .next {
     width: 100%;
@@ -235,6 +312,7 @@ button {
     min-height: 48px;
 
     background: #f28eae;
+
     color: white;
 
     margin-top: 8px;
@@ -245,12 +323,13 @@ button {
 }
 
 
-/* =========================
+/* ==================================================
    날짜 / 시간
-========================= */
+================================================== */
 
 .choice {
     text-align: left;
+
     margin: 16px 0;
 }
 
@@ -279,12 +358,15 @@ input {
     font-size: 14px;
 
     background: white;
+
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 
-/* =========================
+/* ==================================================
    스킨
-========================= */
+================================================== */
 
 .skin-grid {
     display: grid;
@@ -315,7 +397,7 @@ input {
     font-size: 12px;
 
     transition:
-        .15s ease;
+        transform .15s ease;
 
     border-radius: 15px;
 }
@@ -344,19 +426,20 @@ input {
 }
 
 
-/* =========================
+/* ==================================================
    두 번째 페이지 이모티콘
-========================= */
+================================================== */
 
 .middle-icon {
     font-size: 42px;
+
     margin-bottom: 8px;
 }
 
 
-/* =========================
+/* ==================================================
    떨어지는 이모지
-========================= */
+================================================== */
 
 .falling {
     position: fixed;
@@ -395,9 +478,9 @@ input {
 }
 
 
-/* =========================
+/* ==================================================
    마지막 페이지
-========================= */
+================================================== */
 
 .promise {
     background: #fff6f9;
@@ -473,15 +556,17 @@ input {
 }
 
 
-/* =========================
+/* ==================================================
    작은 화면
-========================= */
+================================================== */
 
 @media (max-width: 360px) {
 
     .card {
         width: calc(100% - 24px);
-        padding: 26px 18px;
+
+        padding:
+            26px 18px;
     }
 
     .button-row {
@@ -490,11 +575,21 @@ input {
 
     .button-row .yes,
     .button-row .no {
+
         width: 140px;
         min-width: 140px;
         max-width: 140px;
 
         flex: 0 0 140px;
+
+    }
+
+    .no.moving {
+
+        width: 140px !important;
+        min-width: 140px !important;
+        max-width: 140px !important;
+
     }
 
     h1 {
@@ -576,7 +671,9 @@ function showHome() {
     `;
 
 
-    /* 좋아 */
+    /* ==================================================
+       좋아 버튼
+    ================================================== */
 
     const yesButton =
         document.getElementById(
@@ -593,7 +690,9 @@ function showHome() {
     );
 
 
-    /* 싫어 */
+    /* ==================================================
+       싫어 버튼
+    ================================================== */
 
     const noButton =
         document.getElementById(
@@ -602,8 +701,8 @@ function showHome() {
 
 
     /*
-       컴퓨터:
-       마우스를 가져가면 도망
+       PC
+       마우스가 버튼에 닿으면 도망
     */
 
     noButton.addEventListener(
@@ -613,7 +712,7 @@ function showHome() {
 
 
     /*
-       모바일:
+       모바일
        터치하면 도망
     */
 
@@ -635,7 +734,7 @@ function showHome() {
 
 /* ==================================================
    싫어 버튼 도망
-   버튼 모양 / 크기 완전 고정
+   ★ 버튼 전체가 하나의 도형으로 이동
 ================================================== */
 
 function moveNoButton() {
@@ -651,27 +750,32 @@ function moveNoButton() {
 
 
     /*
-       작은 화면에서는
-       CSS와 동일한 크기 사용
+       화면 크기에 따른 버튼 크기
     */
 
+    const isSmall =
+        window.innerWidth <= 360;
+
     const buttonWidth =
-        window.innerWidth <= 360
-            ? 140
-            : 150;
+        isSmall ? 140 : 150;
 
     const buttonHeight = 48;
 
 
     /*
-       버튼 자체를 fixed로 이동.
-       width / height / border-radius를
-       모두 다시 지정해서
-       이동 후에도 사각형 모양이
-       절대 변하지 않게 함.
+       버튼을 fixed로 변경.
+       ★ 배경 + 글자 + 모서리가
+         모두 이 하나의 버튼 안에서 같이 이동
     */
 
-    button.style.position = "fixed";
+    button.classList.add(
+        "moving"
+    );
+
+
+    button.style.position =
+        "fixed";
+
 
     button.style.width =
         buttonWidth + "px";
@@ -682,6 +786,7 @@ function moveNoButton() {
     button.style.maxWidth =
         buttonWidth + "px";
 
+
     button.style.height =
         buttonHeight + "px";
 
@@ -691,39 +796,56 @@ function moveNoButton() {
     button.style.maxHeight =
         buttonHeight + "px";
 
-    button.style.padding = "0";
 
-    button.style.flex = "0 0 " +
-        buttonWidth + "px";
+    button.style.padding =
+        "0";
+
+
+    button.style.flex =
+        "0 0 " +
+        buttonWidth +
+        "px";
+
 
     button.style.borderRadius =
         "15px";
 
+
     button.style.boxSizing =
         "border-box";
+
 
     button.style.display =
         "flex";
 
+
     button.style.justifyContent =
         "center";
+
 
     button.style.alignItems =
         "center";
 
+
     button.style.whiteSpace =
         "nowrap";
 
+
     button.style.overflow =
         "hidden";
+
+
+    button.style.lineHeight =
+        "48px";
+
 
     button.style.zIndex =
         "9999";
 
 
     /*
-       화면 밖으로 나가지 않게
-       안전 여백 설정
+       화면 밖으로 나가지 않도록
+       여백 설정
     */
 
     const margin = 15;
@@ -736,6 +858,7 @@ function moveNoButton() {
             buttonWidth -
             margin
         );
+
 
     const maxY =
         Math.max(
@@ -758,6 +881,7 @@ function moveNoButton() {
             maxX - margin
         );
 
+
     const y =
         margin +
         Math.random() *
@@ -766,6 +890,11 @@ function moveNoButton() {
             maxY - margin
         );
 
+
+    /*
+       버튼 전체가
+       해당 위치로 이동
+    */
 
     button.style.left =
         x + "px";
@@ -854,6 +983,7 @@ function startFallingEmojis() {
 
                 emoji.className =
                     "falling";
+
 
                 emoji.innerText =
                     emojis[
@@ -1020,6 +1150,7 @@ function saveDate() {
             "date"
         ).value;
 
+
     const time =
         document.getElementById(
             "time"
@@ -1037,6 +1168,7 @@ function saveDate() {
 
 
     selectedDate = date;
+
     selectedTime = time;
 
 
@@ -1117,6 +1249,10 @@ function showSheriff() {
     `;
 }
 
+
+/* ==================================================
+   셰리프 선택
+================================================== */
 
 function pickSheriff(
     button,
@@ -1364,6 +1500,10 @@ function showVandal() {
 }
 
 
+/* ==================================================
+   밴달 선택
+================================================== */
+
 function pickVandal(
     button,
     value
@@ -1401,7 +1541,7 @@ function pickVandal(
 
 
 /* ==================================================
-   오전 / 오후
+   오전 / 오후 변환
 ================================================== */
 
 function formatTime(time) {
