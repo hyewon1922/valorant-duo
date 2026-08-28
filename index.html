@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>나랑 듀오 할래?</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
 * {
@@ -14,8 +17,12 @@ body {
     margin: 0;
     min-height: 100vh;
     background: linear-gradient(145deg, #fce8f1, #eee8ff);
-    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
-                 "Noto Sans KR", sans-serif;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Apple SD Gothic Neo",
+        "Noto Sans KR",
+        sans-serif;
     color: #3d3740;
     display: flex;
     justify-content: center;
@@ -26,47 +33,56 @@ body {
 .card {
     width: calc(100% - 40px);
     max-width: 430px;
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255,255,255,.94);
     border-radius: 28px;
-    padding: 38px 25px;
+    padding: 32px 25px;
     text-align: center;
-    box-shadow: 0 15px 45px rgba(100, 70, 100, 0.15);
+    box-shadow: 0 15px 45px rgba(100,70,100,.15);
+    position: relative;
+    overflow: hidden;
 }
 
 .game-icon {
-    font-size: 62px;
-    margin-bottom: 10px;
+    font-size: 45px;
+    margin-bottom: 6px;
 }
 
 h1 {
-    font-size: 27px;
+    font-size: 22px;
     line-height: 1.45;
-    margin: 10px 0 14px;
+    margin: 8px 0 12px;
 }
 
 .description {
     color: #817983;
-    line-height: 1.7;
-    font-size: 15px;
-    margin-bottom: 28px;
+    line-height: 1.65;
+    font-size: 13px;
+    margin-bottom: 22px;
 }
 
 button {
     border: 0;
     font-family: inherit;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     border-radius: 15px;
-    padding: 15px 20px;
+    padding: 14px 18px;
     cursor: pointer;
 }
 
-.yes {
+.yes,
+.no,
+.submit,
+.save-btn,
+.again {
     width: 100%;
+}
+
+.yes {
     background: #f28eae;
     color: white;
-    box-shadow: 0 7px 18px rgba(242, 142, 174, 0.3);
-    margin-bottom: 12px;
+    box-shadow: 0 7px 18px rgba(242,142,174,.3);
+    margin-bottom: 10px;
 }
 
 .no {
@@ -75,51 +91,137 @@ button {
 }
 
 #noButton {
-    position: relative;
-    transition: left 0.15s ease, top 0.15s ease;
+    transition: left .15s ease, top .15s ease;
 }
 
 .choice {
-    margin: 20px 0;
+    margin: 16px 0;
     text-align: left;
 }
 
 .choice label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 input {
     width: 100%;
-    padding: 15px;
+    padding: 13px;
     border: 1px solid #e4dce2;
     border-radius: 14px;
-    font-size: 16px;
+    font-size: 14px;
     font-family: inherit;
     background: white;
 }
 
-.submit {
-    width: 100%;
+.small {
+    font-size: 11px;
+    color: #99919a;
+    margin-top: 15px;
+}
+
+.middle-icon {
+    font-size: 43px;
+    margin-bottom: 6px;
+}
+
+.middle-button {
     background: #f28eae;
     color: white;
-    margin-top: 10px;
+    box-shadow: 0 7px 18px rgba(242,142,174,.3);
+    width: auto;
+    min-width: 140px;
 }
 
-.small {
-    font-size: 13px;
-    color: #99919a;
-    margin-top: 18px;
+.falling {
+    position: fixed;
+    top: -40px;
+    pointer-events: none;
+    z-index: 20;
+    animation: fall linear forwards;
+    opacity: .75;
 }
 
-.heart {
-    font-size: 48px;
+@keyframes fall {
+    from {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: .75;
+    }
+
+    90% {
+        opacity: .6;
+    }
+
+    to {
+        transform: translateY(110vh) rotate(25deg);
+        opacity: 0;
+    }
+}
+
+.final-card {
+    background: rgba(255,255,255,.96);
+    border: 1px solid #f3dce5;
+}
+
+.final-icon {
+    font-size: 38px;
+    margin-bottom: 8px;
+}
+
+.promise {
+    background: #fff6f9;
+    border: 1px solid #f4d5e1;
+    border-radius: 18px;
+    padding: 17px 15px;
+    margin: 18px 0;
+}
+
+.promise-title {
+    color: #e985a8;
+    font-size: 16px;
+    font-weight: 700;
     margin-bottom: 10px;
+}
+
+.date-line {
+    font-size: 13px;
+    color: #817983;
+    line-height: 1.9;
+}
+
+.final-message {
+    color: #817983;
+    font-size: 13px;
+    line-height: 1.8;
+    margin: 18px 0;
+}
+
+.final-message strong {
+    font-weight: 400;
+    color: #817983;
+}
+
+.save-btn {
+    background: #f28eae;
+    color: white;
+    box-shadow: 0 7px 18px rgba(242,142,174,.3);
+}
+
+.again {
+    background: white;
+    color: #c4869d;
+    border: 1px solid #efc8d7;
+    margin-top: 9px;
 }
 </style>
 </head>
+
 
 <body>
 
@@ -127,18 +229,19 @@ input {
 
     <div class="game-icon">🎮</div>
 
-    <h1>혹시 나랑<br>발로란트 듀오 할래?</h1>
+    <h1>
+        혹시 나랑<br>
+        발로란트 듀오 할래?
+    </h1>
 
     <div class="description">
         나 요즘 같이 게임할 사람 찾고 있는데...<br>
         혹시 시간 괜찮으면 같이 한 판 해줄래?
     </div>
 
-    <button class="yes" onclick="showDate()">
+    <button class="yes" onclick="showMiddle()">
         💗 같이 할래
     </button>
-
-    <br>
 
     <button class="no" id="noButton">
         😭 싫어
@@ -149,112 +252,356 @@ input {
 
 <script>
 
+/* 싫어 버튼 도망가기 */
+
 const noButton = document.getElementById("noButton");
 
 function moveNoButton() {
 
-    const maxX = window.innerWidth - noButton.offsetWidth - 30;
-    const maxY = window.innerHeight - noButton.offsetHeight - 30;
+    const maxX = Math.max(
+        15,
+        window.innerWidth - noButton.offsetWidth - 30
+    );
 
-    const x = Math.max(15, Math.random() * maxX);
-    const y = Math.max(15, Math.random() * maxY);
+    const maxY = Math.max(
+        15,
+        window.innerHeight - noButton.offsetHeight - 30
+    );
+
+    const x = Math.max(
+        15,
+        Math.random() * maxX
+    );
+
+    const y = Math.max(
+        15,
+        Math.random() * maxY
+    );
 
     noButton.style.position = "fixed";
     noButton.style.left = x + "px";
     noButton.style.top = y + "px";
 }
 
-/* PC에서 마우스를 가져가면 도망가기 */
-noButton.addEventListener("mouseenter", moveNoButton);
+noButton.addEventListener(
+    "mouseenter",
+    moveNoButton
+);
 
-/* 휴대폰에서 누르려고 하면 도망가기 */
-noButton.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    moveNoButton();
-});
+noButton.addEventListener(
+    "touchstart",
+    function(e) {
+        e.preventDefault();
+        moveNoButton();
+    }
+);
 
 
-function showDate() {
+/* 두 번째 페이지 */
+
+function showMiddle() {
 
     document.getElementById("card").innerHTML = `
 
-        <div class="game-icon">🎮</div>
+        <div class="middle-icon">
+            😭
+        </div>
 
-        <h1>좋아! 🎀<br>그럼 언제가 편해?</h1>
+        <h1>
+            잠시만.. 좋다고? 😭
+        </h1>
+
+        <div class="description">
+            난 주완이가 거절할 줄 알았어...
+        </div>
+
+        <button
+            class="middle-button"
+            onclick="showDatePage()"
+        >
+            뭐라는 거야?
+        </button>
+
+    `;
+
+    startFallingEmojis();
+}
+
+
+/* 떨어지는 이모지 */
+
+let emojiInterval;
+
+function startFallingEmojis() {
+
+    clearInterval(emojiInterval);
+
+    const emojis = [
+        "💕",
+        "✨",
+        "🎀",
+        "💗"
+    ];
+
+    let count = 0;
+
+    emojiInterval = setInterval(function() {
+
+        if (count >= 7) {
+            clearInterval(emojiInterval);
+            return;
+        }
+
+        const emoji = document.createElement("div");
+
+        emoji.className = "falling";
+
+        emoji.innerText =
+            emojis[Math.floor(Math.random() * emojis.length)];
+
+        emoji.style.left =
+            (10 + Math.random() * 80) + "vw";
+
+        emoji.style.fontSize =
+            (15 + Math.random() * 7) + "px";
+
+        emoji.style.animationDuration =
+            (3.5 + Math.random() * 2) + "s";
+
+        document.body.appendChild(emoji);
+
+        setTimeout(function() {
+            emoji.remove();
+        }, 6000);
+
+        count++;
+
+    }, 650);
+}
+
+
+/* 날짜 / 시간 선택 */
+
+function showDatePage() {
+
+    clearInterval(emojiInterval);
+
+    document
+        .querySelectorAll(".falling")
+        .forEach(e => e.remove());
+
+    document.getElementById("card").innerHTML = `
+
+        <div class="game-icon">
+            🎮
+        </div>
+
+        <h1>
+            그럼 언제가 편해?
+        </h1>
 
         <div class="description">
             같이 할 날짜랑 시간을 골라줘!
         </div>
 
         <div class="choice">
-            <label>📅 날짜</label>
-            <input type="date" id="date">
+
+            <label>
+                📅 날짜
+            </label>
+
+            <input
+                type="date"
+                id="date"
+                min="2026-08-28"
+                max="2026-10-31"
+            >
+
         </div>
+
 
         <div class="choice">
-            <label>⏰ 시간</label>
-            <input type="time" id="time">
+
+            <label>
+                ⏰ 시간
+            </label>
+
+            <input
+                type="time"
+                id="time"
+            >
+
         </div>
 
-        <button class="submit" onclick="finish()">
+
+        <button
+            class="submit yes"
+            onclick="finish()"
+        >
             이 시간으로 할래 💗
         </button>
 
+
         <div class="small">
-            날짜와 시간을 골라주면 돼!
+            2026년 10월 31일까지 선택할 수 있어!
         </div>
+
     `;
-
-    /* 오늘 이전 날짜는 선택하지 못하게 하기 */
-    const dateInput = document.getElementById("date");
-
-    const today = new Date();
-
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const dd = String(today.getDate()).padStart(2, "0");
-
-    dateInput.min = `${yyyy}-${mm}-${dd}`;
 }
 
 
+/* 날짜 제출 */
+
 function finish() {
 
-    const date = document.getElementById("date").value;
-    const time = document.getElementById("time").value;
+    const date =
+        document.getElementById("date").value;
 
-    /* 날짜나 시간을 선택하지 않았을 때 */
+    const time =
+        document.getElementById("time").value;
+
+
     if (!date || !time) {
-        alert("날짜랑 시간을 둘 다 골라줘! 🥺");
+
+        alert(
+            "날짜랑 시간을 둘 다 골라줘! 🥺"
+        );
+
         return;
     }
 
-    const formattedDate = new Date(date + "T00:00:00");
+
+    const d =
+        new Date(date + "T00:00:00");
+
 
     const dateText =
-        formattedDate.getFullYear() + "년 " +
-        (formattedDate.getMonth() + 1) + "월 " +
-        formattedDate.getDate() + "일";
+        d.getFullYear() +
+        "년 " +
+        (d.getMonth() + 1) +
+        "월 " +
+        d.getDate() +
+        "일";
 
-    /* 마지막 화면 */
-    document.getElementById("card").innerHTML = `
 
-        <div class="heart">🎮❤️</div>
+    showFinal(dateText, time);
+}
 
-        <h1>그럼 그날 같이<br>발로에서 만나자 🎮❤️</h1>
 
-        <div class="description">
-            ${dateText}<br>
-            ${time}<br><br>
+/* 마지막 페이지 */
 
-            캐리는 못하지만<br>
-            <strong>트레이드 내줄게... 🥺</strong>
+function showFinal(dateText, time) {
+
+    const card =
+        document.getElementById("card");
+
+    card.className =
+        "card final-card";
+
+
+    card.innerHTML = `
+
+        <h1>
+            그날 발로란트에서<br>
+            꼭 만나기로 약속 🎮❤️
+        </h1>
+
+
+        <div class="promise">
+
+            <div class="promise-title">
+                우리의 듀오 약속 💌
+            </div>
+
+            <div class="date-line">
+                📅 ${dateText}<br>
+                ⏰ ${time}
+            </div>
+
         </div>
 
+
+        <div class="final-message">
+            캐리는 못하지만 트레이드 내줄게
+        </div>
+
+
+        <button
+            class="save-btn"
+            onclick="saveImage()"
+        >
+            💗 사진으로 저장하기
+        </button>
+
+
+        <button
+            class="again"
+            onclick="location.reload()"
+        >
+            처음부터 다시하기
+        </button>
+
     `;
+}
+
+
+/* 사진 저장 */
+
+async function saveImage() {
+
+    const area =
+        document.getElementById("card");
+
+    const save =
+        area.querySelector(".save-btn");
+
+    const again =
+        area.querySelector(".again");
+
+
+    save.style.display = "none";
+    again.style.display = "none";
+
+
+    try {
+
+        const canvas =
+            await html2canvas(
+                area,
+                {
+                    backgroundColor: null,
+                    scale: 2
+                }
+            );
+
+
+        const link =
+            document.createElement("a");
+
+        link.download =
+            "우리의-듀오-약속.png";
+
+        link.href =
+            canvas.toDataURL("image/png");
+
+        link.click();
+
+
+    } catch (e) {
+
+        alert(
+            "사진 저장에 실패했어 🥺\n화면 캡처로 저장해줘!"
+        );
+
+    } finally {
+
+        save.style.display = "block";
+        again.style.display = "block";
+
+    }
 }
 
 </script>
 
 </body>
-</html> 
+</html>
