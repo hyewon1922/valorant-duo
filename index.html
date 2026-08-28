@@ -67,8 +67,7 @@ body {
 
     border-radius: 28px;
 
-    padding:
-        30px 24px;
+    padding: 30px 24px;
 
     text-align: center;
 
@@ -145,12 +144,14 @@ button {
 
     justify-content: center;
     align-items: center;
+
+    position: relative;
 }
 
 
 /*
-   좋아 / 싫어는
-   항상 똑같은 크기
+   좋아 / 싫어
+   항상 동일한 크기
 */
 
 .button-row .yes,
@@ -168,10 +169,15 @@ button {
     flex: 0 0 150px;
 
     display: flex;
+
     justify-content: center;
     align-items: center;
 
     white-space: nowrap;
+
+    border-radius: 15px;
+
+    overflow: hidden;
 }
 
 
@@ -195,10 +201,6 @@ button {
 
     position: relative;
 
-    /*
-       이동하기 전부터 크기를 고정
-    */
-
     width: 150px !important;
     min-width: 150px !important;
     max-width: 150px !important;
@@ -211,9 +213,17 @@ button {
 
     flex: 0 0 150px !important;
 
+    border-radius: 15px !important;
+
     white-space: nowrap;
 
     overflow: hidden;
+
+    /*
+       이동할 때도 버튼 박스 자체의
+       크기와 모양을 유지
+    */
+    transform-origin: center center;
 }
 
 
@@ -230,6 +240,8 @@ button {
     margin-top: 8px;
 
     padding: 14px;
+
+    border-radius: 15px;
 }
 
 
@@ -304,6 +316,8 @@ input {
 
     transition:
         .15s ease;
+
+    border-radius: 15px;
 }
 
 .skin:active {
@@ -326,6 +340,16 @@ input {
 
     color: #e2769b;
 
+    margin-bottom: 8px;
+}
+
+
+/* =========================
+   두 번째 페이지 이모티콘
+========================= */
+
+.middle-icon {
+    font-size: 42px;
     margin-bottom: 8px;
 }
 
@@ -425,6 +449,8 @@ input {
     color: white;
 
     padding: 14px;
+
+    border-radius: 15px;
 }
 
 .edit {
@@ -442,6 +468,8 @@ input {
     margin-top: 9px;
 
     padding: 14px;
+
+    border-radius: 15px;
 }
 
 
@@ -466,7 +494,7 @@ input {
         min-width: 140px;
         max-width: 140px;
 
-        flex-basis: 140px;
+        flex: 0 0 140px;
     }
 
     h1 {
@@ -520,7 +548,7 @@ function showHome() {
 
         <div class="desc">
             나 요즘 같이 게임할 사람 찾고 있는데...<br>
-            혹시 시간 괜찮으면 같이 한 판 해줄래?
+            혹시 시간 괜찮으면 같이 해줄래?
         </div>
 
         <div class="button-row">
@@ -575,7 +603,7 @@ function showHome() {
 
     /*
        컴퓨터:
-       마우스를 가져가기만 해도 도망
+       마우스를 가져가면 도망
     */
 
     noButton.addEventListener(
@@ -607,6 +635,7 @@ function showHome() {
 
 /* ==================================================
    싫어 버튼 도망
+   버튼 모양 / 크기 완전 고정
 ================================================== */
 
 function moveNoButton() {
@@ -622,40 +651,36 @@ function moveNoButton() {
 
 
     /*
-       버튼의 크기를 아예 고정.
-       이동 전후 절대 변하지 않음.
+       작은 화면에서는
+       CSS와 동일한 크기 사용
     */
 
-    const buttonWidth = 150;
+    const buttonWidth =
+        window.innerWidth <= 360
+            ? 140
+            : 150;
+
     const buttonHeight = 48;
 
 
     /*
-       작은 화면에서는
-       실제 CSS 크기와 동일하게 사용
+       버튼 자체를 fixed로 이동.
+       width / height / border-radius를
+       모두 다시 지정해서
+       이동 후에도 사각형 모양이
+       절대 변하지 않게 함.
     */
 
-    const actualWidth =
-        window.innerWidth <= 360
-            ? 140
-            : buttonWidth;
-
-
-    /*
-       fixed로 변경
-    */
-
-    button.style.position =
-        "fixed";
+    button.style.position = "fixed";
 
     button.style.width =
-        actualWidth + "px";
+        buttonWidth + "px";
 
     button.style.minWidth =
-        actualWidth + "px";
+        buttonWidth + "px";
 
     button.style.maxWidth =
-        actualWidth + "px";
+        buttonWidth + "px";
 
     button.style.height =
         buttonHeight + "px";
@@ -666,19 +691,39 @@ function moveNoButton() {
     button.style.maxHeight =
         buttonHeight + "px";
 
-    button.style.padding =
-        "0";
+    button.style.padding = "0";
 
-    button.style.flex =
-        "none";
+    button.style.flex = "0 0 " +
+        buttonWidth + "px";
+
+    button.style.borderRadius =
+        "15px";
+
+    button.style.boxSizing =
+        "border-box";
+
+    button.style.display =
+        "flex";
+
+    button.style.justifyContent =
+        "center";
+
+    button.style.alignItems =
+        "center";
+
+    button.style.whiteSpace =
+        "nowrap";
+
+    button.style.overflow =
+        "hidden";
 
     button.style.zIndex =
-        "999";
+        "9999";
 
 
     /*
-       화면 밖으로 나가지 않도록
-       이동 범위 계산
+       화면 밖으로 나가지 않게
+       안전 여백 설정
     */
 
     const margin = 15;
@@ -688,7 +733,7 @@ function moveNoButton() {
         Math.max(
             margin,
             window.innerWidth -
-            actualWidth -
+            buttonWidth -
             margin
         );
 
@@ -736,16 +781,16 @@ function moveNoButton() {
 
 function showMiddle() {
 
-    /*
-       혹시 남아있는 이모지 제거
-    */
-
     clearFallingEmojis();
 
 
     document.getElementById(
         "card"
     ).innerHTML = `
+
+        <div class="middle-icon">
+            🥹
+        </div>
 
         <h1>
             잠시만.. 좋다고?
@@ -760,7 +805,7 @@ function showMiddle() {
             class="next"
             id="middleButton">
 
-            뭐라는거야?
+            알겠어, 해줄게!
 
         </button>
     `;
@@ -1506,12 +1551,8 @@ function finish() {
 
 function saveImage() {
 
-    /*
-       모바일/PC 모두 사용할 수 있도록
-       인쇄/저장 화면을 열어줌.
-    */
-
     window.print();
+
 }
 
 
