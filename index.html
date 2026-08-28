@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나랑 듀오 할래?</title>
+
+<style>
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #ffe6f0, #e8e1ff);
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    .box {
+        background: white;
+        padding: 40px 25px;
+        border-radius: 25px;
+        width: 80%;
+        max-width: 400px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .emoji {
+        font-size: 60px;
+        margin-bottom: 15px;
+    }
+
+    h1 {
+        font-size: 28px;
+        color: #444;
+        margin-bottom: 15px;
+    }
+
+    p {
+        color: #777;
+        font-size: 16px;
+    }
+
+    button {
+        border: none;
+        border-radius: 15px;
+        padding: 14px 22px;
+        margin: 10px 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #yes {
+        background: #ff8fb3;
+        color: white;
+    }
+
+    #no {
+        background: #eeeeee;
+        color: #555;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <div class="emoji">🎮</div>
+
+    <h1>나랑 발로란트 듀오 할래?</h1>
+
+    <p>혹시 오늘 같이 게임할 사람을 찾고 있는데...</p>
+
+    <button id="yes" onclick="yes()">당연하지! 💗</button>
+    <button id="no" onclick="no()">싫어 😭</button>
+
+</div>
+
+<script>
+function yes() {
+    document.querySelector(".box").innerHTML = `
+        <div class="emoji">🎉</div>
+        <h1>진짜?! 💗</h1>
+        <p>그럼 우리 발로란트 듀오하자!!</p>
+        <p>🎮 같이 게임하자 🎮</p>
+    `;
+}
+
+function no() {
+    document.querySelector("h1").innerText = "진짜 싫어...? 🥺";
+}
+</script>
+
+</body>
+</html>
