@@ -88,15 +88,33 @@ button {
     width: 50%;
 }
 
+/* 좋아 버튼 */
 .yes {
     background: #f28eae;
     color: white;
     box-shadow: 0 7px 18px rgba(242,142,174,.3);
+
+    /* 크기 고정 */
+    height: 48px;
+    padding: 0;
 }
 
+/* 싫어 버튼 */
 .no {
     background: #f1eef1;
     color: #77717a;
+
+    /* 싫어 버튼 크기 고정 */
+    width: 50% !important;
+    height: 48px;
+    min-width: 0;
+    padding: 0;
+
+    /* 글자가 줄바꿈되면서 크기가 바뀌지 않게 */
+    white-space: nowrap;
+
+    /* 도망갈 때도 크기 유지 */
+    flex-shrink: 0;
 }
 
 .next {
@@ -243,6 +261,7 @@ input {
     border: 1px solid #efc8d7;
     margin-top: 9px;
 }
+
 </style>
 </head>
 
@@ -292,14 +311,14 @@ function showHome() {
                 type="button"
                 class="yes"
                 id="yesButton">
-                좋아
+                좋아🥰
             </button>
 
             <button
                 type="button"
                 class="no"
                 id="noButton">
-                싫어
+                싫어🤪
             </button>
 
         </div>
@@ -343,6 +362,7 @@ function showHome() {
 
 /* ==================================================
    싫어 버튼 도망
+   ※ 버튼 크기는 항상 동일하게 유지
 ================================================== */
 
 function moveNoButton() {
@@ -353,31 +373,53 @@ function moveNoButton() {
     if (!button) return;
 
 
+    /* 현재 버튼의 실제 크기를 먼저 기억 */
+    const buttonWidth =
+        button.offsetWidth;
+
+    const buttonHeight =
+        button.offsetHeight;
+
+
+    /* 화면 기준으로 이동 */
     button.style.position = "fixed";
+
+    button.style.width =
+        buttonWidth + "px";
+
+    button.style.height =
+        buttonHeight + "px";
+
+    button.style.padding = "0";
+
+    button.style.flexShrink = "0";
+
+    button.style.whiteSpace =
+        "nowrap";
 
 
     const maxX =
-        window.innerWidth -
-        button.offsetWidth -
-        20;
+        Math.max(
+            10,
+            window.innerWidth -
+            buttonWidth -
+            20
+        );
 
     const maxY =
-        window.innerHeight -
-        button.offsetHeight -
-        20;
+        Math.max(
+            10,
+            window.innerHeight -
+            buttonHeight -
+            20
+        );
 
 
     const x =
-        Math.max(
-            10,
-            Math.random() * maxX
-        );
+        Math.random() * maxX;
 
     const y =
-        Math.max(
-            10,
-            Math.random() * maxY
-        );
+        Math.random() * maxY;
 
 
     button.style.left =
@@ -408,7 +450,9 @@ function showMiddle() {
             type="button"
             class="next"
             id="middleButton">
+
             뭐라는거야?
+
         </button>
     `;
 
@@ -433,12 +477,11 @@ function startFallingEmojis() {
 
     const emojis = [
         "💕",
-        "✨",
+        "✨️",
         "🎀",
         "💗",
         "🌸"
     ];
-
 
     for (
         let i = 0;
@@ -463,28 +506,23 @@ function startFallingEmojis() {
                         )
                     ];
 
-
                 emoji.style.left =
                     Math.random() * 95 +
                     "vw";
-
 
                 emoji.style.fontSize =
                     15 +
                     Math.random() * 10 +
                     "px";
 
-
                 emoji.style.animationDuration =
                     3 +
                     Math.random() * 2 +
                     "s";
 
-
                 document.body.appendChild(
                     emoji
                 );
-
 
                 setTimeout(
                     function() {
@@ -615,9 +653,7 @@ function saveDate() {
 
 
     selectedDate = date;
-
     selectedTime = time;
-
 
     showSheriff();
 }
@@ -630,10 +666,6 @@ function saveDate() {
 function showSheriff() {
 
     document.getElementById("card").innerHTML = `
-
-        <div class="icon">
-            🔫
-        </div>
 
         <h1>
             어떤 셰리프 스킨을 착용할까 🤔
@@ -704,14 +736,11 @@ function pickSheriff(
             }
         );
 
-
     button.classList.add(
         "selected"
     );
 
-
     sheriff = value;
-
 
     document.getElementById(
         "selectedSheriff"
@@ -732,7 +761,6 @@ function goVandal() {
         return;
     }
 
-
     showVandal();
 }
 
@@ -744,10 +772,6 @@ function goVandal() {
 function showVandal() {
 
     document.getElementById("card").innerHTML = `
-
-        <div class="icon">
-            🔫
-        </div>
 
         <h1>
             어떤 밴달 스킨을 착용할까 😇
@@ -801,8 +825,8 @@ function showVandal() {
             </button>
 
             <button class="skin"
-                onclick="pickVandal(this,'싱귤러러티')">
-                싱귤러러티
+                onclick="pickVandal(this,'싱귤레러티')">
+                싱귤레러티
             </button>
 
             <button class="skin"
@@ -827,7 +851,7 @@ function showVandal() {
             class="next"
             onclick="finish()">
 
-            이걸로 할게 🎮
+            이걸로 할게 ✨️
 
         </button>
     `;
@@ -849,14 +873,11 @@ function pickVandal(
             }
         );
 
-
     button.classList.add(
         "selected"
     );
 
-
     vandal = value;
-
 
     document.getElementById(
         "selectedVandal"
@@ -881,12 +902,10 @@ function formatTime(time) {
     let minute =
         parts[1];
 
-
     let period =
         hour < 12
         ? "오전"
         : "오후";
-
 
     if (hour === 0) {
         hour = 12;
@@ -895,7 +914,6 @@ function formatTime(time) {
     else if (hour > 12) {
         hour -= 12;
     }
-
 
     return (
         period +
@@ -968,9 +986,9 @@ function finish() {
 
                 ⏰ ${timeText}<br>
 
-                🔫 셰리프 · ${sheriff}<br>
+                ✨️ 셰리프 · ${sheriff}<br>
 
-                🔫 밴달 · ${vandal}
+                ✨️ 밴달 · ${vandal}
 
             </div>
 
@@ -979,9 +997,7 @@ function finish() {
 
         <div class="final-message">
 
-            캐리는 못하지만 트레이드 내줄게<br>
-
-            선택한 스킨 착용하고 기다리고 있을게 🎮
+            캐리는 못하지만 트레이드 내줄게
 
         </div>
 
