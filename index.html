@@ -525,6 +525,11 @@ input {
     margin: 18px 0;
 }
 
+
+/* ==================================================
+   사진 저장 버튼
+================================================== */
+
 .save {
     width: 100%;
 
@@ -538,6 +543,35 @@ input {
 
     border-radius: 15px;
 }
+
+
+/* ==================================================
+   링크 공유 버튼
+================================================== */
+
+.share {
+    width: 100%;
+
+    min-height: 48px;
+
+    background: #fff0f5;
+
+    color: #d8799b;
+
+    border:
+        1px solid #efc8d7;
+
+    margin-top: 9px;
+
+    padding: 14px;
+
+    border-radius: 15px;
+}
+
+
+/* ==================================================
+   수정 버튼
+================================================== */
 
 .edit {
     width: 100%;
@@ -565,18 +599,17 @@ input {
 
 .save.saving {
     opacity: .7;
+
     pointer-events: none;
 }
 
 
 /* ==================================================
-   이미지로 만들 때 사용하는 카드
+   이미지 캡처 모드
 ================================================== */
 
 #card.capture-mode {
-
     overflow: visible;
-
 }
 
 
@@ -650,6 +683,8 @@ let vandal = "";
 
 function showHome() {
 
+    clearFallingEmojis();
+
     document.getElementById(
         "card"
     ).innerHTML = `
@@ -697,6 +732,7 @@ function showHome() {
         document.getElementById(
             "yesButton"
         );
+
 
     yesButton.addEventListener(
         "click",
@@ -1054,6 +1090,7 @@ function showDate() {
                 id="date"
                 min="2026-08-28"
                 max="2026-09-30"
+                value="${selectedDate}"
             >
 
         </div>
@@ -1068,6 +1105,7 @@ function showDate() {
             <input
                 type="time"
                 id="time"
+                value="${selectedTime}"
             >
 
         </div>
@@ -1554,6 +1592,120 @@ function formatTime(time) {
 
 
 /* ==================================================
+   ★ 공유 링크에 정보 넣기
+================================================== */
+
+function updateShareURL() {
+
+    const params =
+        new URLSearchParams();
+
+
+    params.set(
+        "date",
+        selectedDate
+    );
+
+
+    params.set(
+        "time",
+        selectedTime
+    );
+
+
+    params.set(
+        "sheriff",
+        sheriff
+    );
+
+
+    params.set(
+        "vandal",
+        vandal
+    );
+
+
+    const newURL =
+        window.location.origin +
+        window.location.pathname +
+        "?" +
+        params.toString();
+
+
+    /*
+       페이지 이동 없이
+       주소만 변경
+    */
+
+    window.history.replaceState(
+        {},
+        "",
+        newURL
+    );
+}
+
+
+/* ==================================================
+   ★ URL에서 약속 정보 불러오기
+================================================== */
+
+function loadSharedResult() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const date =
+        params.get("date");
+
+    const time =
+        params.get("time");
+
+    const sheriffValue =
+        params.get("sheriff");
+
+    const vandalValue =
+        params.get("vandal");
+
+
+    /*
+       필요한 정보가 모두 있으면
+       바로 마지막 페이지 표시
+    */
+
+    if (
+        date &&
+        time &&
+        sheriffValue &&
+        vandalValue
+    ) {
+
+        selectedDate =
+            date;
+
+        selectedTime =
+            time;
+
+        sheriff =
+            sheriffValue;
+
+        vandal =
+            vandalValue;
+
+
+        showFinalPage();
+
+        return true;
+    }
+
+
+    return false;
+}
+
+
+/* ==================================================
    6. 마지막 페이지
 ================================================== */
 
@@ -1564,6 +1716,40 @@ function finish() {
         alert(
             "밴달 스킨을 하나 골라줘! 😇"
         );
+
+        return;
+    }
+
+
+    /*
+       완성된 약속 정보를
+       URL에 저장
+    */
+
+    updateShareURL();
+
+
+    showFinalPage();
+}
+
+
+/* ==================================================
+   마지막 페이지 표시
+================================================== */
+
+function showFinalPage() {
+
+    clearFallingEmojis();
+
+
+    if (
+        !selectedDate ||
+        !selectedTime ||
+        !sheriff ||
+        !vandal
+    ) {
+
+        showHome();
 
         return;
     }
@@ -1643,13 +1829,39 @@ function finish() {
 
         <button
             type="button"
+            class="share"
+            id="shareButton"
+            onclick="sharePage()">
+
+            🔗 이 페이지 공유하기
+
+        </button>
+
+
+        <button
+            type="button"
             class="edit"
-            onclick="showDate()">
+            onclick="editAppointment()">
 
             시간 약속 수정하기
 
         </button>
     `;
+}
+
+
+/* ==================================================
+   시간 약속 수정
+================================================== */
+
+function editAppointment() {
+
+    /*
+       기존 날짜와 시간은 유지한 채
+       다시 날짜 선택 화면으로 이동
+    */
+
+    showDate();
 }
 
 
@@ -1660,18 +1872,21 @@ function finish() {
 async function saveImage() {
 
     const card =
-        document.getElementById("card");
+        document.getElementById(
+            "card"
+        );
+
 
     const saveButton =
-        document.getElementById("saveButton");
+        document.getElementById(
+            "saveButton"
+        );
 
 
     if (!card) {
         return;
     }
 
-
-    /* 저장 중 표시 */
 
     if (saveButton) {
 
@@ -1681,20 +1896,22 @@ async function saveImage() {
 
         saveButton.innerText =
             "📸 사진 만드는 중...";
+
     }
+
+
+    let buttons = [];
 
 
     try {
 
         /*
-           이미지에 버튼까지 들어가면
-           이상하므로 저장할 때만
-           버튼을 잠시 숨김
+           이미지에서 버튼 제거
         */
 
-        const buttons =
+        buttons =
             card.querySelectorAll(
-                ".save, .edit"
+                ".save, .share, .edit"
             );
 
 
@@ -1708,18 +1925,13 @@ async function saveImage() {
         );
 
 
-        /*
-           캡처 모드
-        */
-
         card.classList.add(
             "capture-mode"
         );
 
 
         /*
-           html2canvas로 카드 전체를
-           PNG 이미지로 변환
+           카드 캡처
         */
 
         const canvas =
@@ -1751,26 +1963,7 @@ async function saveImage() {
 
 
         /*
-           다시 버튼 표시
-        */
-
-        buttons.forEach(
-            function(button) {
-
-                button.style.display =
-                    "";
-
-            }
-        );
-
-
-        card.classList.remove(
-            "capture-mode"
-        );
-
-
-        /*
-           Canvas → PNG Blob
+           PNG 생성
         */
 
         const blob =
@@ -1796,18 +1989,9 @@ async function saveImage() {
         }
 
 
-        /*
-           파일 이름
-        */
-
         const fileName =
             "발로란트_듀오_약속.png";
 
-
-        /*
-           모바일에서 공유 메뉴를
-           사용할 수 있으면 우선 사용
-        */
 
         const file =
             new File(
@@ -1820,6 +2004,10 @@ async function saveImage() {
             );
 
 
+        /*
+           모바일 공유 기능 사용
+        */
+
         if (
             navigator.share &&
             navigator.canShare &&
@@ -1828,25 +2016,51 @@ async function saveImage() {
             })
         ) {
 
-            await navigator.share({
+            try {
 
-                files: [file],
+                await navigator.share({
 
-                title:
-                    "발로란트 듀오 약속",
+                    files: [file],
 
-                text:
-                    "우리의 발로란트 듀오 약속 🎮❤️"
+                    title:
+                        "발로란트 듀오 약속",
 
-            });
+                    text:
+                        "우리의 발로란트 듀오 약속 🎮❤️"
+
+                });
+
+            }
+
+            catch (error) {
+
+                /*
+                   ★ 중요
+                   사용자가 취소한 경우
+                   아무것도 표시하지 않음
+                */
+
+                if (
+                    error.name !==
+                    "AbortError"
+                ) {
+
+                    console.error(
+                        "공유 오류:",
+                        error
+                    );
+
+                }
+
+            }
 
         }
 
         else {
 
             /*
-               공유 기능을 지원하지 않는
-               브라우저에서는 직접 다운로드
+               공유 기능이 없는 브라우저
+               → PNG 다운로드
             */
 
             const url =
@@ -1861,10 +2075,13 @@ async function saveImage() {
                 );
 
 
-            link.href = url;
+            link.href =
+                url;
+
 
             link.download =
                 fileName;
+
 
             link.style.display =
                 "none";
@@ -1881,6 +2098,16 @@ async function saveImage() {
             link.remove();
 
 
+            /*
+               ★ 여기서는 절대로
+               '저장 완료' 메시지를
+               띄우지 않음.
+
+               브라우저 다운로드 창에서
+               사용자가 취소해도
+               아무 메시지가 뜨지 않음.
+            */
+
             setTimeout(
                 function() {
 
@@ -1892,12 +2119,7 @@ async function saveImage() {
                 1000
             );
 
-
-            alert(
-                "사진이 PNG 파일로 저장되었어! 📸"
-            );
         }
-
 
     }
 
@@ -1910,9 +2132,8 @@ async function saveImage() {
 
 
         /*
-           사용자가 공유창을
-           그냥 닫은 경우에는
-           오류 메시지를 띄우지 않음
+           사용자가 공유창을 취소한 경우
+           메시지를 띄우지 않음
         */
 
         if (
@@ -1921,8 +2142,8 @@ async function saveImage() {
         ) {
 
             alert(
-                "사진 저장에 실패했어 🥺\n" +
-                "인터넷 연결을 확인하고 다시 눌러줘!"
+                "사진을 만들지 못했어 🥺\n" +
+                "잠시 후 다시 눌러줘!"
             );
 
         }
@@ -1933,15 +2154,8 @@ async function saveImage() {
     finally {
 
         /*
-           혹시 오류가 나도
            화면 원상복구
         */
-
-        const buttons =
-            card.querySelectorAll(
-                ".save, .edit"
-            );
-
 
         buttons.forEach(
             function(button) {
@@ -1966,7 +2180,120 @@ async function saveImage() {
 
             saveButton.innerText =
                 "📸 사진으로 저장하기";
+
         }
+
+    }
+}
+
+
+/* ==================================================
+   ★ 마지막 페이지 링크 공유
+================================================== */
+
+async function sharePage() {
+
+    /*
+       혹시 주소에 약속 정보가 없으면
+       현재 선택값으로 다시 생성
+    */
+
+    if (
+        selectedDate &&
+        selectedTime &&
+        sheriff &&
+        vandal
+    ) {
+
+        updateShareURL();
+
+    }
+
+
+    const url =
+        window.location.href;
+
+
+    /*
+       모바일 공유 기능
+    */
+
+    if (
+        navigator.share
+    ) {
+
+        try {
+
+            await navigator.share({
+
+                title:
+                    "발로란트 듀오 약속 🎮❤️",
+
+                text:
+                    "우리의 발로란트 듀오 약속!",
+
+                url:
+                    url
+
+            });
+
+        }
+
+        catch (error) {
+
+            /*
+               ★ 공유창에서 취소하면
+               아무것도 하지 않음
+            */
+
+            if (
+                error.name !==
+                "AbortError"
+            ) {
+
+                console.error(
+                    "페이지 공유 오류:",
+                    error
+                );
+
+            }
+
+        }
+
+        return;
+    }
+
+
+    /*
+       공유 기능이 없는 경우
+       → 링크 복사
+    */
+
+    try {
+
+        await navigator.clipboard.writeText(
+            url
+        );
+
+
+        alert(
+            "페이지 링크가 복사됐어! 🔗"
+        );
+
+    }
+
+    catch (error) {
+
+        /*
+           clipboard가 안 되는 경우
+           직접 복사할 수 있도록 표시
+        */
+
+        window.prompt(
+            "아래 링크를 복사해줘!",
+            url
+        );
+
     }
 }
 
@@ -1975,7 +2302,21 @@ async function saveImage() {
    시작
 ================================================== */
 
-showHome();
+/*
+   공유 링크로 들어온 경우
+   바로 마지막 페이지
+
+   일반 접속이면
+   첫 화면
+*/
+
+if (
+    !loadSharedResult()
+) {
+
+    showHome();
+
+}
 
 </script>
 
