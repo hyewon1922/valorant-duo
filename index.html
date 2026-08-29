@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -10,6 +12,14 @@
                user-scalable=no">
 
 <title>발로란트 듀오</title>
+
+
+<!-- ==================================================
+     이미지 저장용 html2canvas
+================================================== -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 
 <style>
 
@@ -163,7 +173,6 @@ button {
 
 /* ==================================================
    좋아 / 싫어 버튼
-   ★ 크기 완전 고정
 ================================================== */
 
 .button-row .yes,
@@ -213,7 +222,6 @@ button {
 
 /* ==================================================
    싫어
-   ★ 배경 + 테두리 + 글자를 하나의 도형으로 고정
 ================================================== */
 
 .no {
@@ -257,10 +265,6 @@ button {
 
     transform-origin: center center;
 
-    /*
-       브라우저가 버튼 크기나
-       모양을 임의로 바꾸지 못하게 함
-    */
     box-sizing: border-box !important;
 
     appearance: none !important;
@@ -268,10 +272,9 @@ button {
 }
 
 
-/*
-   싫어 버튼이 이동할 때도
-   배경/글자/모서리가 한 덩어리로 이동
-*/
+/* ==================================================
+   싫어 버튼 이동
+================================================== */
 
 .no.moving {
 
@@ -557,6 +560,27 @@ input {
 
 
 /* ==================================================
+   이미지 저장 중
+================================================== */
+
+.save.saving {
+    opacity: .7;
+    pointer-events: none;
+}
+
+
+/* ==================================================
+   이미지로 만들 때 사용하는 카드
+================================================== */
+
+#card.capture-mode {
+
+    overflow: visible;
+
+}
+
+
+/* ==================================================
    작은 화면
 ================================================== */
 
@@ -581,7 +605,6 @@ input {
         max-width: 140px;
 
         flex: 0 0 140px;
-
     }
 
     .no.moving {
@@ -589,7 +612,6 @@ input {
         width: 140px !important;
         min-width: 140px !important;
         max-width: 140px !important;
-
     }
 
     h1 {
@@ -671,10 +693,6 @@ function showHome() {
     `;
 
 
-    /* ==================================================
-       좋아 버튼
-    ================================================== */
-
     const yesButton =
         document.getElementById(
             "yesButton"
@@ -690,31 +708,17 @@ function showHome() {
     );
 
 
-    /* ==================================================
-       싫어 버튼
-    ================================================== */
-
     const noButton =
         document.getElementById(
             "noButton"
         );
 
 
-    /*
-       PC
-       마우스가 버튼에 닿으면 도망
-    */
-
     noButton.addEventListener(
         "mouseenter",
         moveNoButton
     );
 
-
-    /*
-       모바일
-       터치하면 도망
-    */
 
     noButton.addEventListener(
         "touchstart",
@@ -734,7 +738,6 @@ function showHome() {
 
 /* ==================================================
    싫어 버튼 도망
-   ★ 버튼 전체가 하나의 도형으로 이동
 ================================================== */
 
 function moveNoButton() {
@@ -749,10 +752,6 @@ function moveNoButton() {
     }
 
 
-    /*
-       화면 크기에 따른 버튼 크기
-    */
-
     const isSmall =
         window.innerWidth <= 360;
 
@@ -762,12 +761,6 @@ function moveNoButton() {
     const buttonHeight = 48;
 
 
-    /*
-       버튼을 fixed로 변경.
-       ★ 배경 + 글자 + 모서리가
-         모두 이 하나의 버튼 안에서 같이 이동
-    */
-
     button.classList.add(
         "moving"
     );
@@ -775,7 +768,6 @@ function moveNoButton() {
 
     button.style.position =
         "fixed";
-
 
     button.style.width =
         buttonWidth + "px";
@@ -786,7 +778,6 @@ function moveNoButton() {
     button.style.maxWidth =
         buttonWidth + "px";
 
-
     button.style.height =
         buttonHeight + "px";
 
@@ -796,57 +787,41 @@ function moveNoButton() {
     button.style.maxHeight =
         buttonHeight + "px";
 
-
     button.style.padding =
         "0";
-
 
     button.style.flex =
         "0 0 " +
         buttonWidth +
         "px";
 
-
     button.style.borderRadius =
         "15px";
-
 
     button.style.boxSizing =
         "border-box";
 
-
     button.style.display =
         "flex";
-
 
     button.style.justifyContent =
         "center";
 
-
     button.style.alignItems =
         "center";
-
 
     button.style.whiteSpace =
         "nowrap";
 
-
     button.style.overflow =
         "hidden";
-
 
     button.style.lineHeight =
         "48px";
 
-
     button.style.zIndex =
         "9999";
 
-
-    /*
-       화면 밖으로 나가지 않도록
-       여백 설정
-    */
 
     const margin = 15;
 
@@ -869,10 +844,6 @@ function moveNoButton() {
         );
 
 
-    /*
-       랜덤 위치
-    */
-
     const x =
         margin +
         Math.random() *
@@ -890,11 +861,6 @@ function moveNoButton() {
             maxY - margin
         );
 
-
-    /*
-       버튼 전체가
-       해당 위치로 이동
-    */
 
     button.style.left =
         x + "px";
@@ -1569,6 +1535,7 @@ function formatTime(time) {
         hour = 12;
 
     }
+
     else if (hour > 12) {
 
         hour -= 12;
@@ -1666,6 +1633,7 @@ function finish() {
         <button
             type="button"
             class="save"
+            id="saveButton"
             onclick="saveImage()">
 
             📸 사진으로 저장하기
@@ -1686,13 +1654,320 @@ function finish() {
 
 
 /* ==================================================
-   사진 저장
+   ★ 사진 저장
 ================================================== */
 
-function saveImage() {
+async function saveImage() {
 
-    window.print();
+    const card =
+        document.getElementById("card");
 
+    const saveButton =
+        document.getElementById("saveButton");
+
+
+    if (!card) {
+        return;
+    }
+
+
+    /* 저장 중 표시 */
+
+    if (saveButton) {
+
+        saveButton.classList.add(
+            "saving"
+        );
+
+        saveButton.innerText =
+            "📸 사진 만드는 중...";
+    }
+
+
+    try {
+
+        /*
+           이미지에 버튼까지 들어가면
+           이상하므로 저장할 때만
+           버튼을 잠시 숨김
+        */
+
+        const buttons =
+            card.querySelectorAll(
+                ".save, .edit"
+            );
+
+
+        buttons.forEach(
+            function(button) {
+
+                button.style.display =
+                    "none";
+
+            }
+        );
+
+
+        /*
+           캡처 모드
+        */
+
+        card.classList.add(
+            "capture-mode"
+        );
+
+
+        /*
+           html2canvas로 카드 전체를
+           PNG 이미지로 변환
+        */
+
+        const canvas =
+            await html2canvas(
+                card,
+                {
+                    backgroundColor:
+                        "#ffffff",
+
+                    scale:
+                        Math.min(
+                            window.devicePixelRatio || 2,
+                            3
+                        ),
+
+                    useCORS:
+                        true,
+
+                    allowTaint:
+                        false,
+
+                    logging:
+                        false,
+
+                    imageTimeout:
+                        10000
+                }
+            );
+
+
+        /*
+           다시 버튼 표시
+        */
+
+        buttons.forEach(
+            function(button) {
+
+                button.style.display =
+                    "";
+
+            }
+        );
+
+
+        card.classList.remove(
+            "capture-mode"
+        );
+
+
+        /*
+           Canvas → PNG Blob
+        */
+
+        const blob =
+            await new Promise(
+                function(resolve) {
+
+                    canvas.toBlob(
+                        resolve,
+                        "image/png",
+                        1.0
+                    );
+
+                }
+            );
+
+
+        if (!blob) {
+
+            throw new Error(
+                "이미지 생성 실패"
+            );
+
+        }
+
+
+        /*
+           파일 이름
+        */
+
+        const fileName =
+            "발로란트_듀오_약속.png";
+
+
+        /*
+           모바일에서 공유 메뉴를
+           사용할 수 있으면 우선 사용
+        */
+
+        const file =
+            new File(
+                [blob],
+                fileName,
+                {
+                    type:
+                        "image/png"
+                }
+            );
+
+
+        if (
+            navigator.share &&
+            navigator.canShare &&
+            navigator.canShare({
+                files: [file]
+            })
+        ) {
+
+            await navigator.share({
+
+                files: [file],
+
+                title:
+                    "발로란트 듀오 약속",
+
+                text:
+                    "우리의 발로란트 듀오 약속 🎮❤️"
+
+            });
+
+        }
+
+        else {
+
+            /*
+               공유 기능을 지원하지 않는
+               브라우저에서는 직접 다운로드
+            */
+
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.href = url;
+
+            link.download =
+                fileName;
+
+            link.style.display =
+                "none";
+
+
+            document.body.appendChild(
+                link
+            );
+
+
+            link.click();
+
+
+            link.remove();
+
+
+            setTimeout(
+                function() {
+
+                    URL.revokeObjectURL(
+                        url
+                    );
+
+                },
+                1000
+            );
+
+
+            alert(
+                "사진이 PNG 파일로 저장되었어! 📸"
+            );
+        }
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "이미지 저장 오류:",
+            error
+        );
+
+
+        /*
+           사용자가 공유창을
+           그냥 닫은 경우에는
+           오류 메시지를 띄우지 않음
+        */
+
+        if (
+            error.name !==
+            "AbortError"
+        ) {
+
+            alert(
+                "사진 저장에 실패했어 🥺\n" +
+                "인터넷 연결을 확인하고 다시 눌러줘!"
+            );
+
+        }
+
+    }
+
+
+    finally {
+
+        /*
+           혹시 오류가 나도
+           화면 원상복구
+        */
+
+        const buttons =
+            card.querySelectorAll(
+                ".save, .edit"
+            );
+
+
+        buttons.forEach(
+            function(button) {
+
+                button.style.display =
+                    "";
+
+            }
+        );
+
+
+        card.classList.remove(
+            "capture-mode"
+        );
+
+
+        if (saveButton) {
+
+            saveButton.classList.remove(
+                "saving"
+            );
+
+            saveButton.innerText =
+                "📸 사진으로 저장하기";
+        }
+    }
 }
 
 
@@ -1706,3 +1981,5 @@ showHome();
 
 </body>
 </html>
+
+
